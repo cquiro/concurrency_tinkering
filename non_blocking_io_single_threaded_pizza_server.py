@@ -30,16 +30,24 @@ class Server:
             while True:
                 data = conn.recv(BUFFER_SIZE)
                 if not data:
+                    print(f"Connection with {conn.getpeername()} has been closed.")
+                    conn.close()
+                    self.clients.remove(conn)
                     break
                 try:
                     order = int(data.decode())
-                    response = f"Thank you for ordering {order} pizza!\n"
+                    response = f"Thank you for ordering {order} pizzas!\n"
                 except ValueError:
                     response = "Wrong number of pizzas, please try again\n"
                 print(f"Sending message to {conn.getpeername()}")
                 conn.send(response.encode())
         except BlockingIOError:
             pass
+        except OSError as e:
+            print(f"Error with {conn.getpeername()}: {e}")
+            conn.close()
+            self.clients.remove(conn)
+
 
     def start(self) -> None:
         print("Server listening for incoming connections")
