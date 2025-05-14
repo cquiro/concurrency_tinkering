@@ -97,5 +97,3 @@ if __name__ == "__main__":
     event_loop = EventLoop()
     Server(event_loop = event_loop).start()
     event_loop.run_forever()
-
-
